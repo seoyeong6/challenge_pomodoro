@@ -9,25 +9,34 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  static const fifteenMinutes = 900;
+  static const fifteenMinutes = 10;
   static const twentyMinutes = 1200;
   static const twentyFiveMinutes = 1500;
   static const thirtyMinutes = 1800;
   static const thirtyFiveMinutes = 2100;
+  static const fiveMinutesBreak = 5;
 
   int totalSeconds = twentyFiveMinutes;
   bool isRunning = false;
   int totalPomodoros = 0;
-  late Timer timer;
+  Timer? timer;
+  bool isBreakTime = false;
 
   void onTick() {
     if (totalSeconds == 0) {
       setState(() {
-        totalPomodoros = totalPomodoros + 1;
-        isRunning = false;
-        totalSeconds = twentyFiveMinutes;
+        if (!isBreakTime) {
+          totalPomodoros = totalPomodoros + 1;
+          isRunning = false;
+          isBreakTime = true;
+          totalSeconds = fiveMinutesBreak;
+        } else {
+          isBreakTime = false;
+          totalSeconds = twentyFiveMinutes;
+          isRunning = false;
+        }
       });
-      timer.cancel();
+      timer?.cancel();
     } else {
       setState(() {
         totalSeconds = totalSeconds - 1;
@@ -36,7 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void onPausePressed() {
-    timer.cancel();
+    timer?.cancel();
     setState(() {
       isRunning = false;
     });
@@ -61,9 +70,15 @@ class _HomeScreenState extends State<HomeScreen> {
       totalSeconds = seconds;
       isRunning = false;
     });
-    if (timer.isActive) {
-      timer.cancel();
+    if (timer != null && timer!.isActive) {
+      timer!.cancel();
     }
+  }
+
+  void resetRound() {
+    setState(() {
+      totalPomodoros = 0;
+    });
   }
 
   @override
@@ -75,10 +90,10 @@ class _HomeScreenState extends State<HomeScreen> {
           Flexible(
             flex: 1,
             child: Container(
-              padding: EdgeInsets.only(left: 40, top: 50),
+              padding: EdgeInsets.only(left: 40, top: 70),
               alignment: Alignment.centerLeft,
               child: Text(
-                "PomoTimer",
+                isBreakTime ? "Break Time" : "PomoTimer",
                 style: TextStyle(
                   color: Theme.of(context).cardColor,
                   fontSize: 25,
@@ -88,9 +103,9 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           Flexible(
-            flex: 1,
+            flex: 2,
             child: Container(
-              alignment: Alignment.bottomCenter,
+              alignment: Alignment.center,
               child: Text(
                 format(totalSeconds),
                 style: TextStyle(
@@ -117,7 +132,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           Flexible(
-            flex: 1,
+            flex: 2,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -140,35 +155,61 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Row(
               children: [
                 Expanded(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).cardColor,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text(
-                          'Pomodoros',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w600,
-                            color:
-                                Theme.of(
-                                  context,
-                                ).textTheme.headlineLarge!.color,
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'ROUND',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                                color: Theme.of(context).cardColor,
+                              ),
+                            ),
+                            Text(
+                              "${totalPomodoros % 4} / 4",
+                              style: TextStyle(
+                                fontSize: 40,
+                                fontWeight: FontWeight.w600,
+                                color: Theme.of(context).cardColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                        IconButton(
+                          onPressed: resetRound,
+                          icon: Icon(
+                            Icons.refresh,
+                            color: Theme.of(context).cardColor,
+                            size: 30,
                           ),
                         ),
-                        Text(
-                          '$totalPomodoros',
-                          style: TextStyle(
-                            fontSize: 58,
-                            fontWeight: FontWeight.w600,
-                            color:
-                                Theme.of(
-                                  context,
-                                ).textTheme.headlineLarge!.color,
-                          ),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'GOAL',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                                color: Theme.of(context).cardColor,
+                              ),
+                            ),
+                            Text(
+                              "$totalPomodoros / 12",
+                              style: TextStyle(
+                                fontSize: 40,
+                                fontWeight: FontWeight.w600,
+                                color: Theme.of(context).cardColor,
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
