@@ -19,6 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int totalSeconds = twentyFiveMinutes;
   bool isRunning = false;
   int totalPomodoros = 0;
+  int goals = 0;
   Timer? timer;
   bool isBreakTime = false;
 
@@ -27,6 +28,9 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         if (!isBreakTime) {
           totalPomodoros = totalPomodoros + 1;
+          if (totalPomodoros % 4 == 0) {
+            goals = goals + 1;
+          }
           isRunning = false;
           isBreakTime = true;
           totalSeconds = fiveMinutesBreak;
@@ -78,6 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void resetRound() {
     setState(() {
       totalPomodoros = 0;
+      goals = 0;
     });
   }
 
@@ -133,21 +138,37 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           Flexible(
             flex: 2,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                TimeButton(time: '15', onTap: () => selectTime(fifteenMinutes)),
-                TimeButton(time: '20', onTap: () => selectTime(twentyMinutes)),
-                TimeButton(
-                  time: '25',
-                  onTap: () => selectTime(twentyFiveMinutes),
-                ),
-                TimeButton(time: '30', onTap: () => selectTime(thirtyMinutes)),
-                TimeButton(
-                  time: '35',
-                  onTap: () => selectTime(thirtyFiveMinutes),
-                ),
-              ],
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  TimeButton(
+                    time: '15',
+                    onTap: () => selectTime(fifteenMinutes),
+                  ),
+                  SizedBox(width: 30),
+                  TimeButton(
+                    time: '20',
+                    onTap: () => selectTime(twentyMinutes),
+                  ),
+                  SizedBox(width: 30),
+                  TimeButton(
+                    time: '25',
+                    onTap: () => selectTime(twentyFiveMinutes),
+                  ),
+                  SizedBox(width: 30),
+                  TimeButton(
+                    time: '30',
+                    onTap: () => selectTime(thirtyMinutes),
+                  ),
+                  SizedBox(width: 30),
+                  TimeButton(
+                    time: '35',
+                    onTap: () => selectTime(thirtyFiveMinutes),
+                  ),
+                ],
+              ),
             ),
           ),
           Flexible(
@@ -155,11 +176,10 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Row(
               children: [
                 Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 20),
+                  child: Container(
+                    padding: EdgeInsets.only(top: 20),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Column(
                           mainAxisAlignment: MainAxisAlignment.center,
