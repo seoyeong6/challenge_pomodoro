@@ -9,7 +9,12 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  static const fifteenMinutes = 900;
+  static const twentyMinutes = 1200;
   static const twentyFiveMinutes = 1500;
+  static const thirtyMinutes = 1800;
+  static const thirtyFiveMinutes = 2100;
+
   int totalSeconds = twentyFiveMinutes;
   bool isRunning = false;
   int totalPomodoros = 0;
@@ -51,6 +56,16 @@ class _HomeScreenState extends State<HomeScreen> {
     return duration.toString().split('.').first.substring(2, 7);
   }
 
+  void selectTime(int seconds) {
+    setState(() {
+      totalSeconds = seconds;
+      isRunning = false;
+    });
+    if (timer.isActive) {
+      timer.cancel();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -84,6 +99,25 @@ class _HomeScreenState extends State<HomeScreen> {
                       : Icons.play_circle_outline,
                 ),
               ),
+            ),
+          ),
+          Flexible(
+            flex: 1,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                TimeButton(time: '15', onTap: () => selectTime(fifteenMinutes)),
+                TimeButton(time: '20', onTap: () => selectTime(twentyMinutes)),
+                TimeButton(
+                  time: '25',
+                  onTap: () => selectTime(twentyFiveMinutes),
+                ),
+                TimeButton(time: '30', onTap: () => selectTime(thirtyMinutes)),
+                TimeButton(
+                  time: '35',
+                  onTap: () => selectTime(thirtyFiveMinutes),
+                ),
+              ],
             ),
           ),
           Flexible(
@@ -129,6 +163,35 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class TimeButton extends StatelessWidget {
+  final String time;
+  final VoidCallback onTap;
+
+  const TimeButton({required this.time, required this.onTap, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+        decoration: BoxDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          border: Border.all(color: Theme.of(context).cardColor, width: 2),
+        ),
+        child: Text(
+          time,
+          style: TextStyle(
+            color: Theme.of(context).cardColor,
+            fontSize: 25,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
       ),
     );
   }
