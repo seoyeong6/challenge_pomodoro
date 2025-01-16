@@ -9,12 +9,12 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  static const fifteenMinutes = 10;
+  static const fifteenMinutes = 15;
   static const twentyMinutes = 1200;
   static const twentyFiveMinutes = 1500;
   static const thirtyMinutes = 1800;
   static const thirtyFiveMinutes = 2100;
-  static const fiveMinutesBreak = 5;
+  static const fiveMinutesBreak = 300;
 
   int totalSeconds = twentyFiveMinutes;
   bool isRunning = false;
@@ -52,7 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void onStartPressed() {
-    timer = Timer.periodic(Duration(seconds: 1), (timer) {
+    timer = Timer.periodic(const Duration(milliseconds: 50), (timer) {
       onTick();
     });
     setState(() {
