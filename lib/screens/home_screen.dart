@@ -75,6 +75,21 @@ class _HomeScreenState extends State<HomeScreen> {
           Flexible(
             flex: 1,
             child: Container(
+              padding: EdgeInsets.only(left: 40, top: 50),
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "PomoTimer",
+                style: TextStyle(
+                  color: Theme.of(context).cardColor,
+                  fontSize: 25,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ),
+          Flexible(
+            flex: 1,
+            child: Container(
               alignment: Alignment.bottomCenter,
               child: Text(
                 format(totalSeconds),
@@ -87,7 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           Flexible(
-            flex: 3,
+            flex: 2,
             child: Center(
               child: IconButton(
                 iconSize: 120,
